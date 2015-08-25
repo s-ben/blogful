@@ -50,16 +50,44 @@ def post(post_id=1):
     return render_template("post.html", posts=posts)
 
 
-@app.route("/post/<int:post_id>/delete")
-def delete_post(post_id=1):
+
+
+@app.route("/post/<int:post_id>/delete", methods=["GET"])
+def delete_post_get(post_id=1):
     
     post = session.query(Post).get(post_id)
-    session.delete(post)
-    session.commit()
+
     # request.form["title"] = posts.title
     # request.form["content"] = posts.content
     # return render_template("edit_post.html", posts=posts)
-    return redirect(url_for("posts"))
+    return render_template("confirm_delete.html", posts=posts)
+
+
+@app.route("/post/<int:post_id>/delete", methods=["POST"])
+def delete_post_post(post_id=1):
+    
+    post = session.query(Post).get(post_id)
+    deleted = False
+    if request.form["delete_button"] == "Yes":
+        # return redirect(url_for('post', post_id=post.id))  
+        
+        
+        session.delete(post)
+        session.commit()
+        # return redirect(url_for("posts"))
+        deleted = True
+    else:
+        pass
+    # Response = request.form["value"]
+        # return redirect(url_for('post', post_id=post.id))  
+    
+    # request.form["title"] = posts.title
+    # request.form["content"] = posts.content
+    # return render_template("edit_post.html", posts=posts)
+    if deleted:
+        return redirect(url_for("posts"))
+    else:
+        return redirect(url_for('post', post_id=post.id))  
 
 @app.route("/post/<int:post_id>/edit", methods=["GET"])
 def edit_post_get(post_id=1):

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>
+    Are you sure you want to delete {{ posts.title }} ?
+</h1>
+
+<form role="form" method="POST">
+
+    <button type="submit" name = "delete_button" class="btn btn-default" value="Yes">Yes</button><button type="submit" name = "delete_button" class="btn btn-default" value="No">No</button>
+</form>
+{% endblock %}
