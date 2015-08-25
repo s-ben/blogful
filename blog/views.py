@@ -43,11 +43,44 @@ def posts(page=1, paginate_by=10):
         total_pages=total_pages
     )
 
-# @app.route("/post/<int:id>")
-# def post():
+@app.route("/post/<int:post_id>")
+def post(post_id=1):
     
-#     posts = session.query(Post.id)
-#     return render_template("posts.html")
+    posts = session.query(Post).get(post_id)  
+    return render_template("post.html", posts=posts)
+
+
+@app.route("/post/<int:post_id>/delete")
+def delete_post(post_id=1):
+    
+    post = session.query(Post).get(post_id)
+    session.delete(post)
+    session.commit()
+    # request.form["title"] = posts.title
+    # request.form["content"] = posts.content
+    # return render_template("edit_post.html", posts=posts)
+    return redirect(url_for("posts"))
+
+@app.route("/post/<int:post_id>/edit", methods=["GET"])
+def edit_post_get(post_id=1):
+    
+    posts = session.query(Post).get(post_id)
+    
+    # request.form["title"] = posts.title
+    # request.form["content"] = posts.content
+    return render_template("edit_post.html", posts=posts)
+
+@app.route("/post/<int:post_id>/edit", methods=["POST"])
+def edit_post_post(post_id=1):
+    
+    post = session.query(Post).get(post_id)
+    post.title = request.form["title"]
+    post.content = content=mistune.markdown(request.form["content"])
+    
+
+    session.commit()
+    return redirect(url_for('post', post_id=post.id))  
+    
 
 @app.route("/post/add", methods=["GET"])
 def add_post_get():
